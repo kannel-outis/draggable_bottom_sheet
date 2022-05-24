@@ -90,6 +90,14 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                 setState(() => currentHeight = newHeight!);
               }
             },
+            onVerticalDragEnd: (details) {
+              if (newHeight! > (widget.maxExtent / 2)) {
+                currentHeight = newHeight = widget.maxExtent;
+              } else {
+                currentHeight = newHeight = widget.minExtent;
+              }
+              setState(() {});
+            },
             onHorizontalDragUpdate: (details) {
               if (widget.scrollDirection == Axis.vertical) return;
               newHeight = currentHeight + details.delta.dx;
