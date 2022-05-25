@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_getters_setters
+
 library draggable_bottom_sheet_nullsafety;
 
 import 'dart:ui';
@@ -35,11 +37,15 @@ class DraggableBottomSheet extends StatefulWidget {
   /// Scroll direction of the sheet.
   final Axis scrollDirection;
 
+  /// draggable controller
+  final DraggableSheetController controller;
+
   const DraggableBottomSheet({
     Key? key,
     required this.backgroundWidget,
     required this.previewChild,
     required this.expandedChild,
+    required this.controller,
     this.alignment = Alignment.bottomLeft,
     this.blurBackground = true,
     this.expansionExtent = 10,
@@ -60,6 +66,25 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
   void initState() {
     currentHeight = widget.minExtent;
     super.initState();
+    widget.controller.addListener(() {
+      if (widget.controller.close) {
+        currentHeight = newHeight = widget.minExtent;
+        setState(() {});
+      } else if (widget.controller.open) {
+        currentHeight = newHeight = widget.maxExtent;
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant DraggableBottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.maxExtent != oldWidget.maxExtent ||
+        widget.minExtent != oldWidget.minExtent ||
+        widget.alignment != oldWidget.alignment) {
+      setState(() {});
+    }
   }
 
   @override
@@ -132,5 +157,21 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
         ),
       ],
     );
+  }
+}
+
+class DraggableSheetController extends ChangeNotifier {
+  bool get close => _close;
+  bool _close = false;
+  set close(bool close) {
+    _close = close;
+    notifyListeners();
+  }
+
+  bool get open => _open;
+  bool _open = true;
+  set open(bool open) {
+    _open = open;
+    notifyListeners();
   }
 }

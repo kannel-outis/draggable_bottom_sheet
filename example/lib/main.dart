@@ -24,13 +24,34 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class DraggableBottomSheetExample extends StatelessWidget {
+class DraggableBottomSheetExample extends StatefulWidget {
   final String title;
 
   const DraggableBottomSheetExample({
     Key? key,
     required this.title,
   }) : super(key: key);
+
+  @override
+  State<DraggableBottomSheetExample> createState() =>
+      _DraggableBottomSheetExampleState();
+}
+
+class _DraggableBottomSheetExampleState
+    extends State<DraggableBottomSheetExample> {
+  late final DraggableSheetController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = DraggableSheetController();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +65,11 @@ class DraggableBottomSheetExample extends StatelessWidget {
 
     return Scaffold(
       body: DraggableBottomSheet(
+        controller: controller,
         backgroundWidget: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            title: Text(title),
+            title: Text(widget.title),
             backgroundColor: Colors.deepOrange,
           ),
           body: SizedBox(
@@ -63,10 +85,15 @@ class DraggableBottomSheetExample extends StatelessWidget {
                   color: Colors.grey,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  icons[index],
-                  color: Colors.white,
-                  size: 60,
+                child: InkWell(
+                  onTap: () {
+                    controller.open = true;
+                  },
+                  child: Icon(
+                    icons[index],
+                    color: Colors.white,
+                    size: 60,
+                  ),
                 ),
               ),
               separatorBuilder: (BuildContext context, int index) =>
