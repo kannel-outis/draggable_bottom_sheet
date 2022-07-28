@@ -38,14 +38,16 @@ class DraggableBottomSheet extends StatefulWidget {
   final Axis scrollDirection;
 
   /// draggable controller
-  final DraggableSheetController controller;
+  // final DraggableSheetController controller;
+  final Function(bool)? onChanged;
 
   const DraggableBottomSheet({
     Key? key,
     required this.backgroundWidget,
     required this.previewChild,
     required this.expandedChild,
-    required this.controller,
+    this.onChanged,
+    // required this.controller,
     this.alignment = Alignment.bottomLeft,
     this.blurBackground = true,
     this.expansionExtent = 10,
@@ -66,15 +68,15 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
   void initState() {
     currentHeight = widget.minExtent;
     super.initState();
-    widget.controller.addListener(() {
-      if (widget.controller.close) {
-        currentHeight = newHeight = widget.minExtent;
-        setState(() {});
-      } else if (widget.controller.open) {
-        currentHeight = newHeight = widget.maxExtent;
-        setState(() {});
-      }
-    });
+    // widget.controller.addListener(() {
+    //   if (widget.controller.close) {
+    //     currentHeight = newHeight = widget.minExtent;
+    //     setState(() {});
+    //   } else if (widget.controller.open) {
+    //     currentHeight = newHeight = widget.maxExtent;
+    //     setState(() {});
+    //   }
+    // });
   }
 
   @override
@@ -118,8 +120,10 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
             onVerticalDragEnd: (details) {
               if (newHeight! > (widget.maxExtent / 2)) {
                 currentHeight = newHeight = widget.maxExtent;
+                widget.onChanged?.call(true);
               } else {
                 currentHeight = newHeight = widget.minExtent;
+                widget.onChanged?.call(false);
               }
               setState(() {});
             },
@@ -160,18 +164,18 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
   }
 }
 
-class DraggableSheetController extends ChangeNotifier {
-  bool get close => _close;
-  bool _close = false;
-  set close(bool close) {
-    _close = close;
-    notifyListeners();
-  }
+// class DraggableSheetController extends ChangeNotifier {
+//   bool get close => _close;
+//   bool _close = false;
+//   set close(bool close) {
+//     _close = close;
+//     notifyListeners();
+//   }
 
-  bool get open => _open;
-  bool _open = true;
-  set open(bool open) {
-    _open = open;
-    notifyListeners();
-  }
-}
+//   bool get open => _open;
+//   bool _open = true;
+//   set open(bool open) {
+//     _open = open;
+//     notifyListeners();
+//   }
+// }

@@ -39,17 +39,13 @@ class DraggableBottomSheetExample extends StatefulWidget {
 
 class _DraggableBottomSheetExampleState
     extends State<DraggableBottomSheetExample> {
-  late final DraggableSheetController controller;
-
   @override
   void initState() {
     super.initState();
-    controller = DraggableSheetController();
   }
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
 
@@ -65,7 +61,6 @@ class _DraggableBottomSheetExampleState
 
     return Scaffold(
       body: DraggableBottomSheet(
-        controller: controller,
         backgroundWidget: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -86,9 +81,7 @@ class _DraggableBottomSheetExampleState
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: InkWell(
-                  onTap: () {
-                    controller.open = true;
-                  },
+                  onTap: () {},
                   child: Icon(
                     icons[index],
                     color: Colors.white,
